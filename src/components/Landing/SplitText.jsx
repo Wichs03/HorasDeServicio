@@ -18,6 +18,7 @@ const SplitText = ({
   rootMargin = "-100px",
   textAlign = "center",
   onLetterAnimationComplete,
+  charClassName = () => "",
 }) => {
   const ref = useRef(null);
   const animationCompletedRef = useRef(false);
@@ -58,6 +59,16 @@ const SplitText = ({
         break;
       default:
         targets = splitter.chars;
+    }
+
+    if (splitType === "chars" && typeof charClassName === "function") {
+      targets.forEach((t, i) => {
+        const char = t.textContent;
+        const customClass = charClassName(char, i);
+        if (customClass) {
+          t.classList.add(...customClass.split(" "));
+        }
+      });
     }
 
     if (!targets || targets.length === 0) {
