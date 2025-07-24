@@ -1,14 +1,16 @@
-import { useState } from "react";
+import React from 'react'
+import { Route, Routes } from 'react-router'
+import Home from './pages/Home'
+import Landing from './pages/Landing'
 
-function App() {
-  const [count, setCount] = useState(0);
-
+export default function App() {
   return (
     <>
-      <h1 className="bg-amber-200">Hola Mundo</h1>
+      <Routes>
+        <Route path="/" element={<Landing></Landing>} />
+        <Route path="/home" element={<Home></Home>} />
+        <Route path="*" element={<h1 className="text-5xl">404 Not Found</h1>} />
+      </Routes>
     </>
-  );
+  )
 }
-
-export default App;
-gi;
