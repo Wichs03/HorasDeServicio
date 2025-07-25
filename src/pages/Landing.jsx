@@ -21,7 +21,7 @@ export default function Landing() {
           <div className="relative z-20 flex items-center justify-center h-full text-white px-4">
             <SplitText
               text="FUNVAL"
-              className="text-5xl md:text-8xl font-bold text-center drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+              className="text-5xl md:text-8xl font-bold text-center drop-shadow-[0_0_10px_rgba(50,150,255,0.4)] transition-all duration-500 hover:scale-105"
               delay={400}
               duration={0.6}
               ease="power3.out"
@@ -31,7 +31,7 @@ export default function Landing() {
               threshold={0.1}
               rootMargin="-100px"
               textAlign="center"
-              charClassName={(char) => (char === "A" ? "text-blue-400 drop-shadow-[0_0_10px_rgba(0,0,255,0.3)]" : "")}
+              charClassName={(char) => (char === "A" ? "text-transparent drop-shadow-[0_0_10px_rgba(0,0,255,0.5) bg-[url(../../faviconA32.ico)] bg-no-repeat bg-contain bg-center inline-block w-17 h-26" : "")}
             />
           </div>
           <BtnToLogIn></BtnToLogIn>
