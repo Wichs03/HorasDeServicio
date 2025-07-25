@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Route, Routes } from "react-router-dom"; // Ojo, debe ser 'react-router-dom'
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
-import Login from "./components/Login"; // Usa el tuyo
+import Login from "./pages/Login"; // Usa el tuyo
 import StudentServices from "./components/StudentServices";
 
 export default function App() {

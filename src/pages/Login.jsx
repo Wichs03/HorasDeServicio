@@ -1,6 +1,32 @@
-import React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const res = await fetch("https://www.hs-service.api.crealape.com/api/v1/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (res.ok) {
+      alert("Sesión iniciada con éxito");
+      onLogin();           // Actualiza estado en App.jsx
+      navigate("/servicios"); // Redirige a StudentServices
+    } else {
+      alert("Login fallido");
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-black relative">
       <div className="absolute inset-0">
@@ -20,13 +46,16 @@ export default function Login() {
           <p className="text-gray-400">Plataforma de estudio virtual</p>
         </div>
 
-        <form>
+        <form onSubmit={handleLogin}>
           <label className="block mb-4">
             <span className="block mb-1 text-sm">Correo electrónico</span>
             <input
               type="email"
               placeholder="ejemplo@correo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
             />
           </label>
 
@@ -35,7 +64,10 @@ export default function Login() {
             <input
               type="password"
               placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
             />
           </label>
 
