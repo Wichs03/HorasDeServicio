@@ -10,6 +10,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing></Landing>} />
         <Route path="/home" element={<Home></Home>} />
+        <Route path="/login" element={<Login></Login>} />
         <Route path="*" element={<h1 className="text-5xl">404 Not Found</h1>} />
       </Routes>
     </>

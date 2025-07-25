@@ -1,7 +1,8 @@
-import React from 'react'
-import SplitText from '../components/SplitText'
-import ClickSpark from '../components/ClickSpark'
-import { Link } from 'react-router'
+import React from "react";
+import SplitText from "../components/Landing/SplitText";
+import ClickSpark from "../components/Landing/ClickSpark";
+import BtnToLogIn from "../components/Landing/BtnToLogIn";
+import { Link } from "react-router";
 
 export default function Landing() {
   return (
@@ -19,8 +20,8 @@ export default function Landing() {
           <div className="absolute top-0 left-0 w-full h-full z-20"></div>
           <div className="relative z-20 flex items-center justify-center h-full text-white px-4">
             <SplitText
-              text="FUNV"
-              className="text-8xl font-bold text-center"
+              text="FUNVAL"
+              className="text-5xl md:text-8xl font-bold text-center drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
               delay={400}
               duration={0.6}
               ease="power3.out"
@@ -30,37 +31,15 @@ export default function Landing() {
               threshold={0.1}
               rootMargin="-100px"
               textAlign="center"
+              charClassName={(char) => (char === "A" ? "text-blue-400 drop-shadow-[0_0_10px_rgba(0,0,255,0.3)]" : "")}
             />
-            <SplitText
-              text="A"
-              className="text-8xl font-bold text-center text-blue-500"
-              delay={400}
-              duration={0.6}
-              ease="power3.out"
-              splitType="chars"
-              from={{ opacity: 0, y: 40 }}
-              to={{ opacity: 1, y: 0 }}
-              threshold={0.1}
-              rootMargin="-100px"
-              textAlign="center"
-            />
-            <SplitText
-              text="L"
-              className="text-8xl font-bold text-center"
-              delay={400}
-              duration={0.6}
-              ease="power3.out"
-              splitType="chars"
-              from={{ opacity: 0, y: 40 }}
-              to={{ opacity: 1, y: 0 }}
-              threshold={0.1}
-              rootMargin="-100px"
-              textAlign="center"
-            />
-            <Link to="/home" className="w-30 h-10 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 drop-shadow-[0_0_10px_indigo] rounded">Hola</Link>
+          </div>
+          <BtnToLogIn></BtnToLogIn>
+          <div className="w-full flex items-center justify-center">
+            <Link to="/login" className="absolute bottom-10 w-25 h-10 md:w-34 md:h-12 z-50"></Link>
           </div>
         </div>
       </ClickSpark>
     </>
-  )
+  );
 }
