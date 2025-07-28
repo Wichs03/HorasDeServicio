@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Route, Routes } from "react-router-dom"; // Ojo, debe ser 'react-router-dom'
+import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
+import ProfileContent from "./components/profile/ProfileContent";
 
-import Login from "./pages/Login"; // Usa el tuyo
+import Login from "./pages/Login";
 import StudentServices from "./components/StudentServices";
-
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -14,6 +14,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/profile" element={<ProfileContent />} />
       <Route
         path="/login"
         element={<Login onLogin={() => setIsLoggedIn(true)} />}
@@ -32,4 +33,3 @@ export default function App() {
     </Routes>
   );
 }
-
