@@ -5,6 +5,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import StudentServices from "./components/StudentServices";
 import Report from "./pages/Report";
+import Profile from "./components/profile/ProfileContent";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="/servicios" element={<StudentServices />} />
       <Route path="/report" element={<Report></Report>} />
       <Route path="*" element={<h1 className="text-5xl">404 Not Found</h1>} />
