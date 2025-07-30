@@ -10,7 +10,7 @@ export default function Landing() {
       <ClickSpark sparkColor="#fff" sparkSize={10} sparkRadius={25} sparkCount={8} duration={500}>
         <div className="relative w-screen h-screen overflow-hidden">
           <video
-            className="absolute top-0 left-0 w-full h-full object-cover z-[-10]"
+            className="absolute top-0 left-0 w-full h-full object-cover object-[20%_center] z-[-10]"
             src="../public/Space.mp4"
             autoPlay
             muted
