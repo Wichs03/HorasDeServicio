@@ -19,12 +19,17 @@ function EditReviewModal({ service, onClose, onSave }) {
   ];
 
   const handleSave = () => {
-    onSave({
-      amount_approved: amountApproved,
-      comment,
-      status,
-    });
+  const dataToSave = {
+    amount_approved: Number(amountApproved),
+    comment: comment.trim(),
+    status: status,
   };
+
+  /* console.log("Guardando con:", dataToSave); */ // ✅ Esto sí se imprime correctamente
+
+  onSave(dataToSave);
+};
+
 
   return (
     <div className="fixed inset-0 bg-gray-950/20 flex justify-center items-center z-50">
@@ -86,9 +91,89 @@ function EditReviewModal({ service, onClose, onSave }) {
   );
 }
 
+function UpdateOwnModal({ service, onClose, onSave }) {
+  const [description, setDescription] = useState(service.description);
+  const [amount, setAmount] = useState(service.amount_reported);
+  const [category, setCategory] = useState(service.category_id);
+
+  const categories = [
+    { id: 1, name: "Indexacion" },
+    { id: 2, name: "Instructor" },
+    { id: 3, name: "Liderazgo" },
+    { id: 4, name: "Revision" },
+    { id: 5, name: "Asistencia al templo" },
+  ];
+
+  const handleSave = () => {
+    onSave({
+      description,
+      amount_reported: amount,
+      category_id: category,
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-950/20 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded shadow-md w-96 max-w-full">
+        <h2 className="text-xl font-bold mb-4">Actualizar Servicio</h2>
+
+        <label className="block mb-3">
+          Categoría:
+          <select
+            value={category}
+            onChange={(e) => setCategory(Number(e.target.value))}
+            className="border p-2 mt-1 w-full rounded"
+          >
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block mb-3">
+          Descripción:
+          <input
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="border p-2 mt-1 w-full rounded"
+          />
+        </label>
+
+        <label className="block mb-3">
+          Horas reportadas:
+          <input
+            type="number"
+            min={0}
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="border p-2 mt-1 w-full rounded"
+          />
+        </label>
+
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function StudentServices() {
   const [services, setServices] = useState([]);
   const [editingService, setEditingService] = useState(null);
+  const [updatingService, setUpdatingService] = useState(null);
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     fetch("https://www.hs-service.api.crealape.com/api/v1/services", {
@@ -99,6 +184,15 @@ export default function StudentServices() {
       .then((res) => res.json())
       .then((data) => setServices(data))
       .catch((err) => console.error("Error al cargar servicios:", err));
+
+    fetch("https://www.hs-service.api.crealape.com/api/v1/auth/profile", {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setUserRole(data.role?.id))
+      .catch((err) => console.error("Error al cargar perfil:", err));
   }, []);
 
   const handleDownload = (serviceId) => {
@@ -107,34 +201,106 @@ export default function StudentServices() {
   };
 
   const handleSaveEdit = async (editData) => {
-    try {
-      const res = await fetch(
-        `https://www.hs-service.api.crealape.com/api/v1/review/${editingService.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(editData),
-        }
-      );
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(errorData.message || "Error al guardar la revisión");
-        return;
-      }
-      const updated = await res.json();
-      setServices((prev) =>
-        prev.map((s) => (s.id === editingService.id ? { ...s, ...updated } : s))
-      );
-      setEditingService(null);
-    } catch (error) {
-      alert("Error al guardar cambios");
-      console.error(error);
-    }
+  // Convertir el estado de texto a número en string
+  const statusMap = {
+    Pending: "0",
+    Approved: "1",
+    Rejected: "2",
   };
+
+  const formattedData = {
+  amount_approved: editData.amount_approved,
+  comment: editData.comment,
+  status: statusMap[editData.status], // Convertimos aquí
+};
+
+console.log("Datos que se enviarán:", formattedData);
+
+
+  try {
+    const res = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/review/${editingService.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formattedData),
+      }
+    );
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(errorData.message || "Error al guardar la revisión");
+      return;
+    }
+    const updated = await res.json();
+    setServices((prev) =>
+      prev.map((s) => (s.id === editingService.id ? { ...s, ...updated } : s))
+    );
+    setEditingService(null);
+  } catch (error) {
+    alert("Error al guardar cambios");
+    console.error(error);
+  }
+};
+
+
+  const handleUpdateOwn = async (updateData) => {
+  try {
+    // Primero hacemos el PATCH para actualizar el servicio
+    const res = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(updateData),
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(errorData.message || "Error al actualizar el servicio");
+      return;
+    }
+
+    // El PATCH solo devuelve un mensaje de éxito, no el objeto actualizado
+    // Por eso hacemos un GET para obtener el servicio actualizado
+    const getRes = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        credentials: "include",
+      }
+    );
+
+    if (!getRes.ok) {
+      alert("Error al obtener el servicio actualizado");
+      return;
+    }
+
+    // Obtenemos el servicio actualizado
+    const updatedService = await getRes.json();
+
+    // Actualizamos el estado local con el servicio actualizado
+    setServices((prev) =>
+      prev.map((s) => (s.id === updatingService.id ? updatedService : s))
+    );
+
+    // Cerramos el modal de actualización
+    setUpdatingService(null);
+  } catch (error) {
+    alert("Error al actualizar servicio");
+    console.error(error);
+  }
+};
+
 
   return (
     <div className="p-4">
@@ -154,22 +320,18 @@ export default function StudentServices() {
               )}
               <p className="text-xs text-gray-500">Categoría: {service.category?.name}</p>
               <p className="text-xs">
-                Estado:{" "}
-                <span
-                  className={
-                    service.status === "Approved"
-                      ? "text-green-600"
-                      : service.status === "Rejected"
-                      ? "text-red-600"
-                      : "text-yellow-600"
-                  }
-                >
-                  {service.status}
-                </span>
+                Estado: <span className={
+                  service.status === "Approved"
+                    ? "text-green-600"
+                    : service.status === "Rejected"
+                    ? "text-red-600"
+                    : "text-yellow-600"
+                }>{service.status}</span>
               </p>
-              {/* Comentario visible debajo del estado */}
               {service.comment && (
-                <p className="text-xs italic text-gray-600 mt-1">Comentario: {service.comment}</p>
+                <p className="text-xs italic text-gray-600 mt-1">
+                  Comentario: {service.comment}
+                </p>
               )}
             </div>
 
@@ -187,27 +349,46 @@ export default function StudentServices() {
                 <AiOutlineFilePdf />
               </button>
 
-              <button
-                onClick={() => setEditingService(service)}
-                title="Editar"
-                className="text-yellow-600 hover:text-yellow-800 text-xl"
-              >
-                <AiOutlineEdit />
-              </button>
+              {(userRole === 1 || userRole === 2) && (
+                <button
+                  onClick={() => setEditingService(service)}
+                  title="Editar"
+                  className="text-yellow-600 hover:text-yellow-800 text-xl"
+                >
+                  <AiOutlineEdit />
+                </button>
+              )}
+
+              {userRole === 4 && service.status === "Pending" && (
+                <button
+                  onClick={() => setUpdatingService(service)}
+                  title="Actualizar"
+                  className="text-green-600 hover:text-green-800 text-xl"
+                >
+                  <AiOutlineEdit />
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
 
-      {editingService && (
+      {editingService && (userRole === 1 || userRole === 2) && (
         <EditReviewModal
           service={editingService}
           onClose={() => setEditingService(null)}
           onSave={handleSaveEdit}
         />
       )}
+
+      {updatingService && userRole === 4 && (
+        <UpdateOwnModal
+          service={updatingService}
+          onClose={() => setUpdatingService(null)}
+          onSave={handleUpdateOwn}
+        />
+      )}
     </div>
   );
 }
-
 
