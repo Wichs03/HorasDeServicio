@@ -6,6 +6,7 @@ import {
   AiOutlineClose,
   AiOutlineClockCircle,
 } from "react-icons/ai";
+import axiosClient from "../api/axiosClient";
 
 function EditReviewModal({ service, onClose, onSave }) {
   const [amountApproved, setAmountApproved] = useState(service.amount_approved ?? 0);
@@ -65,8 +66,7 @@ function EditReviewModal({ service, onClose, onSave }) {
               title={value}
               className={`text-2xl p-1 rounded hover:bg-gray-100 transition-colors ${
                 status === value ? `${color} bg-gray-200` : "text-gray-400"
-              }`}
-            >
+              }`}>
               {icon}
             </button>
           ))}
@@ -75,14 +75,89 @@ function EditReviewModal({ service, onClose, onSave }) {
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
-          >
+            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
             Cancelar
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-          >
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UpdateOwnModal({ service, onClose, onSave }) {
+  const [description, setDescription] = useState(service.description);
+  const [amount, setAmount] = useState(service.amount_reported);
+  const [category, setCategory] = useState(service.category_id);
+
+  const categories = [
+    { id: 1, name: "Indexacion" },
+    { id: 2, name: "Instructor" },
+    { id: 3, name: "Liderazgo" },
+    { id: 4, name: "Revision" },
+    { id: 5, name: "Asistencia al templo" },
+  ];
+
+  const handleSave = () => {
+    onSave({
+      description,
+      amount_reported: amount,
+      category_id: category,
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-950/20 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded shadow-md w-96 max-w-full">
+        <h2 className="text-xl font-bold mb-4">Actualizar Servicio</h2>
+
+        <label className="block mb-3">
+          Categoría:
+          <select
+            value={category}
+            onChange={(e) => setCategory(Number(e.target.value))}
+            className="border p-2 mt-1 w-full rounded">
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block mb-3">
+          Descripción:
+          <input
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="border p-2 mt-1 w-full rounded"
+          />
+        </label>
+
+        <label className="block mb-3">
+          Horas reportadas:
+          <input
+            type="number"
+            min={0}
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="border p-2 mt-1 w-full rounded"
+          />
+        </label>
+
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
+            Cancelar
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
             Guardar
           </button>
         </div>
@@ -176,14 +251,11 @@ export default function StudentServices() {
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    fetch("https://www.hs-service.api.crealape.com/api/v1/services", {
-      method: "GET",
-      headers: { Accept: "application/json" },
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => setServices(data))
+    axiosClient
+      .get("/services")
+      .then((res) => setServices(res.data))
       .catch((err) => console.error("Error al cargar servicios:", err));
+
 
     fetch("https://www.hs-service.api.crealape.com/api/v1/auth/profile", {
       method: "GET",
@@ -192,6 +264,7 @@ export default function StudentServices() {
     })
       .then((res) => res.json())
       .then((data) => setUserRole(data.role?.id))
+    
       .catch((err) => console.error("Error al cargar perfil:", err));
   }, []);
 
@@ -201,6 +274,7 @@ export default function StudentServices() {
   };
 
   const handleSaveEdit = async (editData) => {
+
   // Convertir el estado de texto a número en string
   const statusMap = {
     Pending: "0",
@@ -264,10 +338,12 @@ export default function StudentServices() {
   } catch (error) {
     alert("Error al guardar cambios");
     console.error(error);
+
   }
 };
 
   const handleUpdateOwn = async (updateData) => {
+
     try {
       // Primero hacemos el PATCH para actualizar el servicio
       const res = await fetch(
@@ -322,7 +398,9 @@ export default function StudentServices() {
   };
 
 
+
   return (
+
   <div className="p-4">
     <h1 className="text-xl font-bold mb-4 text-center">Horas de Servicio</h1>
 
@@ -427,3 +505,4 @@ export default function StudentServices() {
 );
 
 }
+
