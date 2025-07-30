@@ -9,20 +9,23 @@ export default function Login({ onLogin }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("https://www.hs-service.api.crealape.com/api/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
+    const res = await fetch(
+      "https://www.hs-service.api.crealape.com/api/v1/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      }
+    );
 
     if (res.ok) {
       alert("Sesión iniciada con éxito");
-      onLogin();           // Actualiza estado en App.jsx
-      navigate("/servicios"); // Redirige a StudentServices
+      onLogin();
+      navigate("/servicios");
     } else {
       alert("Login fallido");
     }
@@ -38,7 +41,7 @@ export default function Login({ onLogin }) {
       </div>
 
       {/* LOGIN */}
-      <div className="relative z-10 bg-[#1c1c1e]/50 backdrop-blur-md p-8 rounded-2xl shadow-xl w-[90%] max-w-md text-white border border-gray-700">
+      <div className="relative z-10 bg-[#1c1c1e]/50 p-8 rounded-2xl shadow-xl w-[90%] max-w-md text-white border border-gray-700">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold flex justify-center items-center gap-[2px]">
             <span>FUNV</span>
@@ -79,7 +82,7 @@ export default function Login({ onLogin }) {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition"
+            className="cursor-pointer w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition"
           >
             Iniciar sesión
           </button>
