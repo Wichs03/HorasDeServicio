@@ -10,7 +10,7 @@ export default function Landing() {
       <ClickSpark sparkColor="#fff" sparkSize={10} sparkRadius={25} sparkCount={8} duration={500}>
         <div className="relative w-screen h-screen overflow-hidden">
           <video
-            className="absolute top-0 left-0 w-full h-full object-cover z-[-10]"
+            className="absolute top-0 left-0 w-full h-full object-cover object-[20%_center] z-[-10]"
             src="../public/Space.mp4"
             autoPlay
             muted
@@ -31,7 +31,7 @@ export default function Landing() {
               threshold={0.1}
               rootMargin="-100px"
               textAlign="center"
-              charClassName={(char) => (char === "A" ? "text-transparent drop-shadow-[0_0_10px_rgba(0,0,255,0.5) bg-[url(../../faviconA32.ico)] bg-no-repeat bg-contain bg-center inline-block w-17 h-26" : "")}
+              charClassName={(char) => (char === "A" ? "text-transparent drop-shadow-[0_0_10px_rgba(0,0,255,0.5) bg-[url(../../faviconA32.ico)] bg-no-repeat bg-contain bg-center inline-block md:w-17 md:h-26" : "")}
             />
           </div>
           <BtnToLogIn></BtnToLogIn>
