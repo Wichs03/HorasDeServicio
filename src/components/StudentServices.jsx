@@ -209,15 +209,15 @@ export default function StudentServices() {
   };
 
   const formattedData = {
-  amount_approved: editData.amount_approved,
-  comment: editData.comment,
-  status: statusMap[editData.status], // Convertimos aquí
-};
+    amount_approved: editData.amount_approved,
+    comment: editData.comment,
+    status: statusMap[editData.status], // Convertimos aquí
+  };
 
-console.log("Datos que se enviarán:", formattedData);
-
+  console.log("Datos que se enviarán:", formattedData);
 
   try {
+    // PATCH para actualizar la revisión
     const res = await fetch(
       `https://www.hs-service.api.crealape.com/api/v1/review/${editingService.id}`,
       {
@@ -230,49 +230,16 @@ console.log("Datos que se enviarán:", formattedData);
         body: JSON.stringify(formattedData),
       }
     );
+
     if (!res.ok) {
       const errorData = await res.json();
       alert(errorData.message || "Error al guardar la revisión");
       return;
     }
-    const updated = await res.json();
-    setServices((prev) =>
-      prev.map((s) => (s.id === editingService.id ? { ...s, ...updated } : s))
-    );
-    setEditingService(null);
-  } catch (error) {
-    alert("Error al guardar cambios");
-    console.error(error);
-  }
-};
 
-
-  const handleUpdateOwn = async (updateData) => {
-  try {
-    // Primero hacemos el PATCH para actualizar el servicio
-    const res = await fetch(
-      `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(updateData),
-      }
-    );
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      alert(errorData.message || "Error al actualizar el servicio");
-      return;
-    }
-
-    // El PATCH solo devuelve un mensaje de éxito, no el objeto actualizado
-    // Por eso hacemos un GET para obtener el servicio actualizado
+    // GET para obtener la revisión actualizada
     const getRes = await fetch(
-      `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+      `https://www.hs-service.api.crealape.com/api/v1/services/${editingService.id}`,
       {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -281,114 +248,182 @@ console.log("Datos que se enviarán:", formattedData);
     );
 
     if (!getRes.ok) {
-      alert("Error al obtener el servicio actualizado");
+      alert("Error al obtener la revisión actualizada");
       return;
     }
 
-    // Obtenemos el servicio actualizado
-    const updatedService = await getRes.json();
+    const updatedReview = await getRes.json();
 
-    // Actualizamos el estado local con el servicio actualizado
+    // Actualizamos el estado local con la revisión actualizada
     setServices((prev) =>
-      prev.map((s) => (s.id === updatingService.id ? updatedService : s))
+      prev.map((s) => (s.id === editingService.id ? updatedReview : s))
     );
 
-    // Cerramos el modal de actualización
-    setUpdatingService(null);
+    // Cerramos el modal
+    setEditingService(null);
   } catch (error) {
-    alert("Error al actualizar servicio");
+    alert("Error al guardar cambios");
     console.error(error);
   }
 };
 
+  const handleUpdateOwn = async (updateData) => {
+    try {
+      // Primero hacemos el PATCH para actualizar el servicio
+      const res = await fetch(
+        `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(errorData.message || "Error al actualizar el servicio");
+        return;
+      }
+
+      // El PATCH solo devuelve un mensaje de éxito, no el objeto actualizado
+      // Por eso hacemos un GET para obtener el servicio actualizado
+      const getRes = await fetch(
+        `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+        {
+          method: "GET",
+          headers: { Accept: "application/json" },
+          credentials: "include",
+        }
+      );
+
+      if (!getRes.ok) {
+        alert("Error al obtener el servicio actualizado");
+        return;
+      }
+
+      // Obtenemos el servicio actualizado
+      const updatedService = await getRes.json();
+
+      // Actualizamos el estado local con el servicio actualizado
+      setServices((prev) =>
+        prev.map((s) => (s.id === updatingService.id ? updatedService : s))
+      );
+
+      // Cerramos el modal de actualización
+      setUpdatingService(null);
+    } catch (error) {
+      alert("Error al actualizar servicio");
+      console.error(error);
+    }
+  };
+
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4 text-center">Horas de Servicio</h1>
-      <div className="grid grid-cols-1 gap-4 place-items-center">
-        {services.map((service) => (
-          <div
-            key={service.id}
-            className="w-full max-w-xl grid grid-cols-3 gap-3 items-center p-3 bg-white shadow rounded-lg text-sm"
-          >
-            <div>
-              <p className="font-semibold">{service.description}</p>
-              {service.user && (
-                <p className="text-xs text-gray-500 italic">
-                  De: {service.user.full_name}
-                </p>
-              )}
-              <p className="text-xs text-gray-500">Categoría: {service.category?.name}</p>
-              <p className="text-xs">
-                Estado: <span className={
-                  service.status === "Approved"
-                    ? "text-green-600"
-                    : service.status === "Rejected"
-                    ? "text-red-600"
-                    : "text-yellow-600"
-                }>{service.status}</span>
-              </p>
-              {service.comment && (
-                <p className="text-xs italic text-gray-600 mt-1">
-                  Comentario: {service.comment}
-                </p>
-              )}
-            </div>
+  <div className="p-4">
+    <h1 className="text-xl font-bold mb-4 text-center">Horas de Servicio</h1>
 
-            <div>
-              <p>Reportadas: {service.amount_reported}</p>
-              <p>Aprobadas: {service.amount_approved ?? "—"}</p>
-            </div>
+    <div className="space-y-6">
+      {services.map((service) => (
+        <div
+          key={service.id}
+          className="flex flex-col md:flex-row gap-4 items-stetch justify-center w-full mx-auto"
+        >
+          {/* CARD IZQUIERDA */}
+          <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
 
-            <div className="flex gap-2 justify-end">
-              <button
-                onClick={() => handleDownload(service.id)}
-                title="Ver PDF"
-                className="text-blue-600 hover:text-blue-800 text-xl"
-              >
-                <AiOutlineFilePdf />
-              </button>
-
-              {(userRole === 1 || userRole === 2) && (
-                <button
-                  onClick={() => setEditingService(service)}
-                  title="Editar"
-                  className="text-yellow-600 hover:text-yellow-800 text-xl"
-                >
-                  <AiOutlineEdit />
-                </button>
-              )}
-
-              {userRole === 4 && service.status === "Pending" && (
-                <button
-                  onClick={() => setUpdatingService(service)}
-                  title="Actualizar"
-                  className="text-green-600 hover:text-green-800 text-xl"
-                >
-                  <AiOutlineEdit />
-                </button>
-              )}
-            </div>
+            {service.user && (
+              <p className="font-semibold text-base">{service.user.full_name}</p>
+            )}
+            <p className="text-gray-700">
+              Categoría:{" "}
+              <span className="font-medium">{service.category?.name}</span>
+            </p>
+            <p className="text-gray-700">
+              Descripción:{" "}
+              <span className="font-medium">{service.description}</span>
+            </p>
+            <p className="text-gray-700">
+              Horas reportadas:{" "}
+              <span className="font-medium">{service.amount_reported}</span>
+            </p>
+            <button
+              onClick={() => handleDownload(service.id)}
+              title="Ver PDF"
+              className="text-blue-600 hover:text-blue-800 text-xl"
+            >
+              <AiOutlineFilePdf />
+            </button>
           </div>
-        ))}
-      </div>
 
-      {editingService && (userRole === 1 || userRole === 2) && (
-        <EditReviewModal
-          service={editingService}
-          onClose={() => setEditingService(null)}
-          onSave={handleSaveEdit}
-        />
-      )}
+          {/* CARD DERECHA */}
+          <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
 
-      {updatingService && userRole === 4 && (
-        <UpdateOwnModal
-          service={updatingService}
-          onClose={() => setUpdatingService(null)}
-          onSave={handleUpdateOwn}
-        />
-      )}
+            <p>
+              Estado:{" "}
+              <span
+                className={
+                  service.status === "Approved"
+                    ? "text-green-600 font-semibold"
+                    : service.status === "Rejected"
+                    ? "text-red-600 font-semibold"
+                    : "text-yellow-600 font-semibold"
+                }
+              >
+                {service.status}
+              </span>
+            </p>
+            {service.comment && (
+              <p className="text-gray-600 italic">
+                Comentario: {service.comment}
+              </p>
+            )}
+            <p>Horas aprobadas: {service.amount_approved ?? "—"}</p>
+
+            {(userRole === 1 || userRole === 2) && (
+              <button
+                onClick={() => setEditingService(service)}
+                title="Editar"
+                className="text-yellow-600 hover:text-yellow-800 text-xl"
+              >
+                <AiOutlineEdit />
+              </button>
+            )}
+
+            {userRole === 4 && service.status === "Pending" && (
+              <button
+                onClick={() => setUpdatingService(service)}
+                title="Actualizar"
+                className="text-green-600 hover:text-green-800 text-xl"
+              >
+                <AiOutlineEdit />
+              </button>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
-  );
-}
 
+    {/* MODALES */}
+    {editingService && (userRole === 1 || userRole === 2) && (
+      <EditReviewModal
+        service={editingService}
+        onClose={() => setEditingService(null)}
+        onSave={handleSaveEdit}
+      />
+    )}
+
+    {updatingService && userRole === 4 && (
+      <UpdateOwnModal
+        service={updatingService}
+        onClose={() => setUpdatingService(null)}
+        onSave={handleUpdateOwn}
+      />
+    )}
+  </div>
+);
+
+}
