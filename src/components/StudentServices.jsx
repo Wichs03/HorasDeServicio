@@ -19,12 +19,17 @@ function EditReviewModal({ service, onClose, onSave }) {
   ];
 
   const handleSave = () => {
-    onSave({
-      amount_approved: amountApproved,
-      comment,
-      status,
-    });
+  const dataToSave = {
+    amount_approved: Number(amountApproved),
+    comment: comment.trim(),
+    status: status,
   };
+
+  /* console.log("Guardando con:", dataToSave); */ // ✅ Esto sí se imprime correctamente
+
+  onSave(dataToSave);
+};
+
 
   return (
     <div className="fixed inset-0 bg-gray-950/20 flex justify-center items-center z-50">
@@ -196,64 +201,106 @@ export default function StudentServices() {
   };
 
   const handleSaveEdit = async (editData) => {
-    try {
-      const res = await fetch(
-        `https://www.hs-service.api.crealape.com/api/v1/review/${editingService.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(editData),
-        }
-      );
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(errorData.message || "Error al guardar la revisión");
-        return;
-      }
-      const updated = await res.json();
-      setServices((prev) =>
-        prev.map((s) => (s.id === editingService.id ? { ...s, ...updated } : s))
-      );
-      setEditingService(null);
-    } catch (error) {
-      alert("Error al guardar cambios");
-      console.error(error);
-    }
+  // Convertir el estado de texto a número en string
+  const statusMap = {
+    Pending: "0",
+    Approved: "1",
+    Rejected: "2",
   };
 
-  const handleUpdateOwn = async (updateData) => {
-    try {
-      const res = await fetch(
-        `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(updateData),
-        }
-      );
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(errorData.message || "Error al actualizar el servicio");
-        return;
+  const formattedData = {
+  amount_approved: editData.amount_approved,
+  comment: editData.comment,
+  status: statusMap[editData.status], // Convertimos aquí
+};
+
+console.log("Datos que se enviarán:", formattedData);
+
+
+  try {
+    const res = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/review/${editingService.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formattedData),
       }
-      const updated = await res.json();
-      setServices((prev) =>
-        prev.map((s) => (s.id === updatingService.id ? { ...s, ...updated } : s))
-      );
-      setUpdatingService(null);
-    } catch (error) {
-      alert("Error al actualizar servicio");
-      console.error(error);
+    );
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(errorData.message || "Error al guardar la revisión");
+      return;
     }
-  };
+    const updated = await res.json();
+    setServices((prev) =>
+      prev.map((s) => (s.id === editingService.id ? { ...s, ...updated } : s))
+    );
+    setEditingService(null);
+  } catch (error) {
+    alert("Error al guardar cambios");
+    console.error(error);
+  }
+};
+
+
+  const handleUpdateOwn = async (updateData) => {
+  try {
+    // Primero hacemos el PATCH para actualizar el servicio
+    const res = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(updateData),
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(errorData.message || "Error al actualizar el servicio");
+      return;
+    }
+
+    // El PATCH solo devuelve un mensaje de éxito, no el objeto actualizado
+    // Por eso hacemos un GET para obtener el servicio actualizado
+    const getRes = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        credentials: "include",
+      }
+    );
+
+    if (!getRes.ok) {
+      alert("Error al obtener el servicio actualizado");
+      return;
+    }
+
+    // Obtenemos el servicio actualizado
+    const updatedService = await getRes.json();
+
+    // Actualizamos el estado local con el servicio actualizado
+    setServices((prev) =>
+      prev.map((s) => (s.id === updatingService.id ? updatedService : s))
+    );
+
+    // Cerramos el modal de actualización
+    setUpdatingService(null);
+  } catch (error) {
+    alert("Error al actualizar servicio");
+    console.error(error);
+  }
+};
+
 
   return (
     <div className="p-4">
