@@ -252,7 +252,7 @@ export default function StudentServices() {
     <div>
       <Navbar />
       <div className="bg-gradient-to-b from-white to-gray-300 p-4 mt-15">
-        <h1 className="text-xl font-bold mb-4 text-center">
+        <h1 className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-[#05121b] via-[#2c75ba] to-[#05121b] text-transparent bg-clip-text drop-shadow-lg tracking-wide">
           Horas de Servicio
         </h1>
 
@@ -263,7 +263,7 @@ export default function StudentServices() {
               className="flex flex-col md:flex-row gap-4 items-stetch justify-center w-full mx-auto"
             >
               {/* CARD IZQUIERDA */}
-              <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
+              <div className="bg-gradient-to-br from-gray-200 to-white backdrop-blur-sm border border-gray-300 shadow rounded-xl p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
                 {service.user && (
                   <p className="font-semibold text-base">
                     {service.user.full_name}
@@ -291,7 +291,7 @@ export default function StudentServices() {
               </div>
 
               {/* CARD DERECHA */}
-              <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
+              <div className="bg-gradient-to-br from-white to-gray-200 backdrop-blur-sm border border-gray-300 shadow rounded-xl p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
                 <p>
                   Estado:{" "}
                   <span
