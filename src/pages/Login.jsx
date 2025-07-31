@@ -32,8 +32,14 @@ export default function Login() {
       {/* LOGIN */}
       <div className="relative z-10 bg-[#1c1c1e]/50 p-8 rounded-2xl shadow-xl w-[90%] max-w-md text-white border border-gray-700">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold">
-            FUN<span className="text-blue-400">VAL</span>
+          <h1 className="text-white text-4xl font-bold flex justify-center items-center gap-[2px]">
+            <span>FUNV</span>
+            <img
+              src="/faviconA32.ico"
+              alt="A"
+              className="w-7 h-7 inline-block"
+            />
+            <span>L</span>
           </h1>
           <p className="text-gray-400">Plataforma de estudio virtual</p>
         </div>
