@@ -79,11 +79,11 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              to="/servicios"
+              to="/service-hours"
               className="text-md font-semibold block px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => setIsDropdownOpen(false)}
             >
-              Services
+              Report Hours
             </Link>
 
             {/* ROLES */}
