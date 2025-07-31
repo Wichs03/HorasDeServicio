@@ -1,8 +1,29 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { logout } from "../../api/authService";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { logout as logoutService } from "../../api/authService";
+import { useAuth } from "../../Hooks/useAuth.jsx";
 
 export default function Footer() {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const navigate = useNavigate();
+  const { user, logout: logoutContext } = useAuth();
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logoutService();
+      logoutContext(); // Limpiar el estado del contexto
+      navigate("/login");
+    } catch (error) {
+      console.error("Error en logout:", error);
+      // Aún así limpiar el estado local
+      logoutContext();
+      navigate("/login");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <footer className="bg-gradient-to-t from-gray-900 via-gray-600 to-gray-300 text-white md:px-20 pt-10 pb-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -96,13 +117,18 @@ export default function Footer() {
           </button>
           <p className="mb-1">
             Usted se ha identificado como <br />
-            <strong>Edwin Dario Álzate López</strong>
+            <strong>{user?.nombre || "Usuario"}</strong>
           </p>
           <button
-            onClick={logout}
-            className="cursor-pointer border mt-2 px-3 py-2 bg-red-600 lg:bg-blue-700 lg:hover:bg-red-700 font-semibold text-white rounded-lg shadow transition-colors duration-300 transform hover:scale-105"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className={`cursor-pointer border mt-2 px-3 py-2 font-semibold text-white rounded-lg shadow transition-colors duration-300 transform hover:scale-105 ${
+              isLoggingOut
+                ? "bg-gray-500"
+                : "bg-red-600 lg:bg-blue-700 lg:hover:bg-red-700"
+            }`}
           >
-            Cerrar Sesión
+            {isLoggingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
           </button>
         </div>
 

@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { logout } from "../../api/authService";
+import { Link, useNavigate } from "react-router-dom";
+import { logout as logoutService } from "../../api/authService";
+import { useAuth } from "../../Hooks/useAuth.jsx";
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const { logout: logoutContext } = useAuth();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -18,6 +22,22 @@ export default function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logoutService();
+      logoutContext(); // Limpiar el estado del contexto
+      navigate("/login");
+    } catch (error) {
+      console.error("Error en logout:", error);
+      // Aún así limpiar el estado local
+      logoutContext();
+      navigate("/login");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <nav className="bg-gradient-to-b from-gray-200 to-white shadow-lg px-6 py-3 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
@@ -34,21 +54,6 @@ export default function Navbar() {
             <span>L</span>
           </h1>
         </Link>
-        {/* <div>
-          <Link
-            to="/home"
-            className="text-gray-700 font-semibold hover:text-blue-600 md:ml-10"
-          >
-            Home
-          </Link>
-
-          <Link
-            to="/servicios"
-            className="text-gray-700 font-semibold hover:text-blue-600"
-          >
-            Report
-          </Link>
-        </div> */}
       </div>
 
       {/* MENU DROPDOWN */}
@@ -85,13 +90,13 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* REPORT */}
+            {/* SERVICIOS */}
             <Link
               to="/servicios"
               className="text-md font-semibold block px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => setIsDropdownOpen(false)}
             >
-              Report
+              Servicios
             </Link>
 
             {/* PROFILE */}
@@ -104,10 +109,13 @@ export default function Navbar() {
             </Link>
             {/* LOG OUT */}
             <button
-              onClick={logout}
-              className="cursor-pointer text-red-600 font-semibold block px-4 py-2 rounded-lg hover:bg-gray-100"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className={`cursor-pointer font-semibold block px-4 py-2 rounded-lg hover:bg-gray-100 w-full text-left ${
+                isLoggingOut ? "text-gray-400" : "text-red-600"
+              }`}
             >
-              Cerrar Sesión
+              {isLoggingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
             </button>
           </div>
         )}

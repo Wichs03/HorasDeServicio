@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <div className="h-screen w-full bg-gradient-to-t from-gray-300 to-white flex flex-col font-sans">
+      <div className="w-full bg-gradient-to-t from-gray-300 to-white flex flex-col font-sans mt-20">
         <main className="flex-1 flex flex-col md:flex-row items-center justify-center gap-10 px-6 py-8">
           <div className="w-full md:w-1/2">
             <div
