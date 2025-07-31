@@ -30,7 +30,7 @@ export default function Home() {
           <div className="w-full md:w-2/5 bg-white bg-opacity-70 rounded-lg p-6 shadow-lg">
             <Card className="max-w-full border-none bg-transparent shadow-none">
               <h5 className="text-2xl font-bold tracking-tight text-gray-900">
-                Welcome ALEX
+                ¡Welcome ALEX!
               </h5>
               <p className="font-normal text-gray-700 dark:text-gray-400">
                   En FUNVAL creemos en el aprendizaje a través del servicio. Como parte de tu formación, contribuyes realizando horas de servicio que benefician a la comunidad y apoyan a la institución. Estas horas no solo son una forma de retribuir, sino que también representan un método significativo de pago por tu curso. A través de este modelo, adquieres experiencia práctica, desarrollas responsabilidad y ayudas a que la educación sea más accesible para todos.
