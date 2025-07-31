@@ -251,8 +251,10 @@ export default function StudentServices() {
   return (
     <div>
       <Navbar />
+
       <div className="bg-gradient-to-b from-white to-gray-300 p-4 mt-15">
         <h1 className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-[#05121b] via-[#2c75ba] to-[#05121b] text-transparent bg-clip-text drop-shadow-lg tracking-wide">
+
           Horas de Servicio
         </h1>
 

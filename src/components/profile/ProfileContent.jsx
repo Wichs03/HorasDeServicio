@@ -7,7 +7,7 @@ export default function ProfileContent() {
   return (
     <div>
       <Navbar />
-      <div className="bg-gray-300 py-8 px-4 mt-12">
+      <div className="bg-gradient-to-b from-white to-[#c0def3] py-8 px-4 mt-12">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-4 md:gap-6">
           <div className="w-full md:w-[300px]">
             <ProfileSidebar />

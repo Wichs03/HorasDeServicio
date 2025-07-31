@@ -7,7 +7,9 @@ export default function Home() {
   return (
     <div>
       <Navbar />
+
       <div className="h-screen w-full bg-blue-50 flex flex-col font-sans">
+
         <main className="flex-1 flex flex-col md:flex-row items-center justify-center gap-10 px-6 py-8">
           <div className="w-full md:w-1/2">
             <div
@@ -24,6 +26,7 @@ export default function Home() {
               ></iframe>
             </div>
           </div>
+
           <div className="w-full md:w-2/5 text-center md:text-left flex flex-col">
             <h1 className="text-3xl font-bold text-blue-900 mb-4">
               Welcome ALEX
@@ -43,6 +46,7 @@ export default function Home() {
                 Record your hours
               </button>
             </div>
+
           </div>
         </main>
       </div>
