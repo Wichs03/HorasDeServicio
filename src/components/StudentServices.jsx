@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
 import {
   AiOutlineFilePdf,
   AiOutlineEdit,
@@ -11,33 +9,28 @@ import {
 import axiosClient from "../api/axiosClient";
 
 function EditReviewModal({ service, onClose, onSave }) {
-  const [amountApproved, setAmountApproved] = useState(
-    service.amount_approved ?? 0
-  );
+  const [amountApproved, setAmountApproved] = useState(service.amount_approved ?? 0);
   const [comment, setComment] = useState(service.comment || "");
   const [status, setStatus] = useState(service.status);
 
   const statusOptions = [
-    {
-      value: "Pending",
-      icon: <AiOutlineClockCircle />,
-      color: "text-yellow-600",
-    },
+    { value: "Pending", icon: <AiOutlineClockCircle />, color: "text-yellow-600" },
     { value: "Approved", icon: <AiOutlineCheck />, color: "text-green-600" },
     { value: "Rejected", icon: <AiOutlineClose />, color: "text-red-600" },
   ];
 
   const handleSave = () => {
-    const dataToSave = {
-      amount_approved: Number(amountApproved),
-      comment: comment.trim(),
-      status: status,
-    };
-
-    /* console.log("Guardando con:", dataToSave); */ // ✅ Esto sí se imprime correctamente
-
-    onSave(dataToSave);
+  const dataToSave = {
+    amount_approved: Number(amountApproved),
+    comment: comment.trim(),
+    status: status,
   };
+
+  /* console.log("Guardando con:", dataToSave); */ // ✅ Esto sí se imprime correctamente
+
+  onSave(dataToSave);
+};
+
 
   return (
     <div className="fixed inset-0 bg-gray-950/20 flex justify-center items-center z-50">
@@ -73,8 +66,7 @@ function EditReviewModal({ service, onClose, onSave }) {
               title={value}
               className={`text-2xl p-1 rounded hover:bg-gray-100 transition-colors ${
                 status === value ? `${color} bg-gray-200` : "text-gray-400"
-              }`}
-            >
+              }`}>
               {icon}
             </button>
           ))}
@@ -83,14 +75,89 @@ function EditReviewModal({ service, onClose, onSave }) {
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
-          >
+            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
             Cancelar
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-          >
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UpdateOwnModal({ service, onClose, onSave }) {
+  const [description, setDescription] = useState(service.description);
+  const [amount, setAmount] = useState(service.amount_reported);
+  const [category, setCategory] = useState(service.category_id);
+
+  const categories = [
+    { id: 1, name: "Indexacion" },
+    { id: 2, name: "Instructor" },
+    { id: 3, name: "Liderazgo" },
+    { id: 4, name: "Revision" },
+    { id: 5, name: "Asistencia al templo" },
+  ];
+
+  const handleSave = () => {
+    onSave({
+      description,
+      amount_reported: amount,
+      category_id: category,
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-950/20 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded shadow-md w-96 max-w-full">
+        <h2 className="text-xl font-bold mb-4">Actualizar Servicio</h2>
+
+        <label className="block mb-3">
+          Categoría:
+          <select
+            value={category}
+            onChange={(e) => setCategory(Number(e.target.value))}
+            className="border p-2 mt-1 w-full rounded">
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block mb-3">
+          Descripción:
+          <input
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="border p-2 mt-1 w-full rounded"
+          />
+        </label>
+
+        <label className="block mb-3">
+          Horas reportadas:
+          <input
+            type="number"
+            min={0}
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="border p-2 mt-1 w-full rounded"
+          />
+        </label>
+
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
+            Cancelar
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
             Guardar
           </button>
         </div>
@@ -133,9 +200,7 @@ function UpdateOwnModal({ service, onClose, onSave }) {
             className="border p-2 mt-1 w-full rounded"
           >
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </label>
@@ -191,9 +256,15 @@ export default function StudentServices() {
       .then((res) => setServices(res.data))
       .catch((err) => console.error("Error al cargar servicios:", err));
 
-    axiosClient
-      .get("/profile")
-      .then((res) => setUserRole(res.data.role?.id))
+
+    fetch("https://www.hs-service.api.crealape.com/api/v1/auth/profile", {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setUserRole(data.role?.id))
+    
       .catch((err) => console.error("Error al cargar perfil:", err));
   }, []);
 
@@ -203,169 +274,235 @@ export default function StudentServices() {
   };
 
   const handleSaveEdit = async (editData) => {
-    // Convertir estado de texto a número en string
-    const statusMap = {
-      Pending: "0",
-      Approved: "1",
-      Rejected: "2",
-    };
 
-    const formattedData = {
-      amount_approved: editData.amount_approved,
-      comment: editData.comment,
-      status: statusMap[editData.status], // Convertimos aquí
-    };
-
-    console.log("Datos que se enviarán:", formattedData);
-
-    try {
-      // PATCH para actualizar la revisión
-      await axiosClient.patch(`/review/${editingService.id}`, formattedData);
-
-      // GET para obtener la revisión actualizada
-      const getRes = await axiosClient.get(`/services/${editingService.id}`);
-
-      // Actualizamos el estado local con la revisión actualizada
-      setServices((prev) =>
-        prev.map((s) => (s.id === editingService.id ? getRes.data : s))
-      );
-
-      // Cerramos el modal
-      setEditingService(null);
-    } catch (error) {
-      console.error("Error al guardar la revisión:", error);
-      alert(error.response?.data?.message || "Error al guardar cambios");
-    }
+  // Convertir el estado de texto a número en string
+  const statusMap = {
+    Pending: "0",
+    Approved: "1",
+    Rejected: "2",
   };
 
-  const handleUpdateOwn = async (updateData) => {
-    try {
-      // PATCH para actualizar el servicio
-      await axiosClient.patch(`/services/${updatingService.id}`, updateData);
+  const formattedData = {
+    amount_approved: editData.amount_approved,
+    comment: editData.comment,
+    status: statusMap[editData.status], // Convertimos aquí
+  };
 
-      // GET para obtener el servicio actualizado
-      const getRes = await axiosClient.get(`/services/${updatingService.id}`);
+  console.log("Datos que se enviarán:", formattedData);
+
+  try {
+    // PATCH para actualizar la revisión
+    const res = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/review/${editingService.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formattedData),
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(errorData.message || "Error al guardar la revisión");
+      return;
+    }
+
+    // GET para obtener la revisión actualizada
+    const getRes = await fetch(
+      `https://www.hs-service.api.crealape.com/api/v1/services/${editingService.id}`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        credentials: "include",
+      }
+    );
+
+    if (!getRes.ok) {
+      alert("Error al obtener la revisión actualizada");
+      return;
+    }
+
+    const updatedReview = await getRes.json();
+
+    // Actualizamos el estado local con la revisión actualizada
+    setServices((prev) =>
+      prev.map((s) => (s.id === editingService.id ? updatedReview : s))
+    );
+
+    // Cerramos el modal
+    setEditingService(null);
+  } catch (error) {
+    alert("Error al guardar cambios");
+    console.error(error);
+
+  }
+};
+
+  const handleUpdateOwn = async (updateData) => {
+
+    try {
+      // Primero hacemos el PATCH para actualizar el servicio
+      const res = await fetch(
+        `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(errorData.message || "Error al actualizar el servicio");
+        return;
+      }
+
+      // El PATCH solo devuelve un mensaje de éxito, no el objeto actualizado
+      // Por eso hacemos un GET para obtener el servicio actualizado
+      const getRes = await fetch(
+        `https://www.hs-service.api.crealape.com/api/v1/services/${updatingService.id}`,
+        {
+          method: "GET",
+          headers: { Accept: "application/json" },
+          credentials: "include",
+        }
+      );
+
+      if (!getRes.ok) {
+        alert("Error al obtener el servicio actualizado");
+        return;
+      }
+
+      // Obtenemos el servicio actualizado
+      const updatedService = await getRes.json();
 
       // Actualizamos el estado local con el servicio actualizado
       setServices((prev) =>
-        prev.map((s) => (s.id === updatingService.id ? getRes.data : s))
+        prev.map((s) => (s.id === updatingService.id ? updatedService : s))
       );
 
       // Cerramos el modal de actualización
       setUpdatingService(null);
     } catch (error) {
-      console.error("Error al actualizar servicio:", error);
-      alert(error.response?.data?.message || "Error al actualizar servicio");
+      alert("Error al actualizar servicio");
+      console.error(error);
     }
   };
 
+
+
   return (
-    <div>
-      <Navbar />
-      <div className="p-4 mt-20 bg-gradient-to-b from-white to-gray-300">
-        <h1 className="text-xl font-bold mb-4 text-center">
-          Horas de Servicio
-        </h1>
 
-        <div className="space-y-6">
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className="flex flex-col md:flex-row gap-4 items-stetch justify-center w-full mx-auto"
+  <div className="p-4">
+    <h1 className="text-xl font-bold mb-4 text-center">Horas de Servicio</h1>
+
+    <div className="space-y-6">
+      {services.map((service) => (
+        <div
+          key={service.id}
+          className="flex flex-col md:flex-row gap-4 items-stetch justify-center w-full mx-auto"
+        >
+          {/* CARD IZQUIERDA */}
+          <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
+
+            {service.user && (
+              <p className="font-semibold text-base">{service.user.full_name}</p>
+            )}
+            <p className="text-gray-700">
+              Categoría:{" "}
+              <span className="font-medium">{service.category?.name}</span>
+            </p>
+            <p className="text-gray-700">
+              Descripción:{" "}
+              <span className="font-medium">{service.description}</span>
+            </p>
+            <p className="text-gray-700">
+              Horas reportadas:{" "}
+              <span className="font-medium">{service.amount_reported}</span>
+            </p>
+            <button
+              onClick={() => handleDownload(service.id)}
+              title="Ver PDF"
+              className="text-blue-600 hover:text-blue-800 text-xl"
             >
-              {/* CARD IZQUIERDA */}
-              <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
-                {service.user && (
-                  <p className="font-semibold text-base">
-                    {service.user.full_name}
-                  </p>
-                )}
-                <p className="text-gray-700">
-                  Categoría:{" "}
-                  <span className="font-medium">{service.category?.name}</span>
-                </p>
-                <p className="text-gray-700">
-                  Descripción:{" "}
-                  <span className="font-medium">{service.description}</span>
-                </p>
-                <p className="text-gray-700">
-                  Horas reportadas:{" "}
-                  <span className="font-medium">{service.amount_reported}</span>
-                </p>
-                <button
-                  onClick={() => handleDownload(service.id)}
-                  title="Ver PDF"
-                  className="text-blue-600 hover:text-blue-800 text-xl"
-                >
-                  <AiOutlineFilePdf />
-                </button>
-              </div>
+              <AiOutlineFilePdf />
+            </button>
+          </div>
 
-              {/* CARD DERECHA */}
-              <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
-                <p>
-                  Estado:{" "}
-                  <span
-                    className={
-                      service.status === "Approved"
-                        ? "text-green-600 font-semibold"
-                        : service.status === "Rejected"
-                        ? "text-red-600 font-semibold"
-                        : "text-yellow-600 font-semibold"
-                    }
-                  >
-                    {service.status}
-                  </span>
-                </p>
-                {service.comment && (
-                  <p className="text-gray-600 italic">
-                    Comentario: {service.comment}
-                  </p>
-                )}
-                <p>Horas aprobadas: {service.amount_approved ?? "—"}</p>
+          {/* CARD DERECHA */}
+          <div className="bg-white shadow rounded-lg p-4 w-full max-w-md text-sm flex-1 transform transition-transform duration-300 hover:scale-105">
 
-                {(userRole === 1 || userRole === 2) && (
-                  <button
-                    onClick={() => setEditingService(service)}
-                    title="Editar"
-                    className="text-yellow-600 hover:text-yellow-800 text-xl"
-                  >
-                    <AiOutlineEdit />
-                  </button>
-                )}
+            <p>
+              Estado:{" "}
+              <span
+                className={
+                  service.status === "Approved"
+                    ? "text-green-600 font-semibold"
+                    : service.status === "Rejected"
+                    ? "text-red-600 font-semibold"
+                    : "text-yellow-600 font-semibold"
+                }
+              >
+                {service.status}
+              </span>
+            </p>
+            {service.comment && (
+              <p className="text-gray-600 italic">
+                Comentario: {service.comment}
+              </p>
+            )}
+            <p>Horas aprobadas: {service.amount_approved ?? "—"}</p>
 
-                {userRole === 4 && service.status === "Pending" && (
-                  <button
-                    onClick={() => setUpdatingService(service)}
-                    title="Actualizar"
-                    className="text-green-600 hover:text-green-800 text-xl"
-                  >
-                    <AiOutlineEdit />
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+            {(userRole === 1 || userRole === 2) && (
+              <button
+                onClick={() => setEditingService(service)}
+                title="Editar"
+                className="text-yellow-600 hover:text-yellow-800 text-xl"
+              >
+                <AiOutlineEdit />
+              </button>
+            )}
+
+            {userRole === 4 && service.status === "Pending" && (
+              <button
+                onClick={() => setUpdatingService(service)}
+                title="Actualizar"
+                className="text-green-600 hover:text-green-800 text-xl"
+              >
+                <AiOutlineEdit />
+              </button>
+            )}
+          </div>
         </div>
-
-        {/* MODALES */}
-        {editingService && (userRole === 1 || userRole === 2) && (
-          <EditReviewModal
-            service={editingService}
-            onClose={() => setEditingService(null)}
-            onSave={handleSaveEdit}
-          />
-        )}
-
-        {updatingService && userRole === 4 && (
-          <UpdateOwnModal
-            service={updatingService}
-            onClose={() => setUpdatingService(null)}
-            onSave={handleUpdateOwn}
-          />
-        )}
-      </div>
-      <Footer />
+      ))}
     </div>
-  );
+
+    {/* MODALES */}
+    {editingService && (userRole === 1 || userRole === 2) && (
+      <EditReviewModal
+        service={editingService}
+        onClose={() => setEditingService(null)}
+        onSave={handleSaveEdit}
+      />
+    )}
+
+    {updatingService && userRole === 4 && (
+      <UpdateOwnModal
+        service={updatingService}
+        onClose={() => setUpdatingService(null)}
+        onSave={handleUpdateOwn}
+      />
+    )}
+  </div>
+);
+
 }
+
