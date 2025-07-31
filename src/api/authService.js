@@ -1,10 +1,9 @@
-// src/api/authService.js
 import axiosClient from "./axiosClient";
 
 export async function login(email, password) {
   const res = await axiosClient.post("/auth/login", { email, password });
   localStorage.setItem("isLoggedIn", "true");
-  
+
   return res.data;
 }
 

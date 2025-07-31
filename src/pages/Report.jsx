@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axiosClient from "../api/axiosClient";
-import { logout } from "../api/authService";
+import { logout as logoutService } from "../api/authService";
+import { useAuth } from "../Hooks/useAuth.jsx";
 
 export default function Report() {
   const [categories, setCategories] = useState([]);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
+  const { logout: logoutContext } = useAuth();
 
   async function getData() {
     try {
@@ -21,6 +24,22 @@ export default function Report() {
     }
   }
 
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logoutService();
+      logoutContext(); // Limpiar el estado del contexto
+      navigate("/login");
+    } catch (error) {
+      console.error("Error en logout:", error);
+      // Aún así limpiar el estado local
+      logoutContext();
+      navigate("/login");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   useEffect(() => {
     getData();
     console.log(categories);
@@ -29,7 +48,9 @@ export default function Report() {
   return (
     <>
       <div className="w-full flex flex-col items-center justify-center gap-5 p-5">
-        <h3 className="text-3xl font-bold text-slate-900 uppercase">Categorias</h3>
+        <h3 className="text-3xl font-bold text-slate-900 uppercase">
+          Categorias
+        </h3>
         {/* Categorias */}
         <div className="h-full w-[80%] grid grid-cols-1 place-content-center place-items-center gap-8 text-slate-700 md:grid-cols-2 lg:grid-cols-3">
           <article className="w-full h-full flex flex-col justify-between bg-blue-50 rounded-md shadow-xl/10 hover:shadow-xl/20 hover:scale-105 transition-all duration-500">
@@ -39,7 +60,9 @@ export default function Report() {
               className="mask-b-from-60% w-full bg-cover object-cover overflow-hidden max-h-[60%]"
             />
             <div className="p-5">
-              <h3 className="text-xl font-semibold mb-2 text-slate-800">Indexacion</h3>
+              <h3 className="text-xl font-semibold mb-2 text-slate-800">
+                Indexacion
+              </h3>
               <p className="text-sm">Indexacion de nombre en family search</p>
               <div className="w-full flex items-center justify-between mt-5">
                 <button className="bg-gray-400 text-sm text-slate-100 hover:scale-105 transition-transform duration-300 px-3 py-1 rounded inset-shadow-sm inset-shadow-gray-600 cursor-pointer">
@@ -58,7 +81,9 @@ export default function Report() {
               className="mask-b-from-60% w-full bg-cover object-cover overflow-hidden max-h-[60%]"
             />
             <div className="p-5">
-              <h3 className="text-xl font-semibold mb-2 text-slate-800">Instructor</h3>
+              <h3 className="text-xl font-semibold mb-2 text-slate-800">
+                Instructor
+              </h3>
               <p className="text-sm">Instructor de la clase</p>
               <div className="w-full flex items-center justify-between mt-5">
                 <button className="bg-gray-400 text-sm text-slate-100 hover:scale-105 transition-transform duration-300 px-3 py-1 rounded inset-shadow-sm inset-shadow-gray-600 cursor-pointer">
@@ -77,8 +102,12 @@ export default function Report() {
               className="mask-b-from-60% w-full bg-cover object-cover overflow-hidden max-h-[60%]"
             />
             <div className="p-5">
-              <h3 className="text-xl font-semibold mb-2 text-slate-800">Liderazgo</h3>
-              <p className="text-sm">Servir en el obispado o en la presidencia de la estaca</p>
+              <h3 className="text-xl font-semibold mb-2 text-slate-800">
+                Liderazgo
+              </h3>
+              <p className="text-sm">
+                Servir en el obispado o en la presidencia de la estaca
+              </p>
               <div className="w-full flex items-center justify-between mt-5">
                 <button className="bg-gray-400 text-sm text-slate-100 hover:scale-105 transition-transform duration-300 px-3 py-1 rounded inset-shadow-sm inset-shadow-gray-600 cursor-pointer">
                   Info.
@@ -96,7 +125,9 @@ export default function Report() {
               className="mask-b-from-60% w-full bg-cover object-cover overflow-hidden max-h-[60%]"
             />
             <div className="p-5">
-              <h3 className="text-xl font-semibold mb-2 text-slate-800">Revision</h3>
+              <h3 className="text-xl font-semibold mb-2 text-slate-800">
+                Revision
+              </h3>
               <p className="text-sm">Revision de registros en family search</p>
               <div className="w-full flex items-center justify-between mt-5">
                 <button className="bg-gray-400 text-sm text-slate-100 hover:scale-105 transition-transform duration-300 px-3 py-1 rounded inset-shadow-sm inset-shadow-gray-600 cursor-pointer">
@@ -115,8 +146,12 @@ export default function Report() {
               className="mask-b-from-60% w-full bg-cover object-cover overflow-hidden max-h-[60%]"
             />
             <div className="p-5">
-              <h3 className="text-xl font-semibold mb-2 text-slate-800">Asistencia al templo</h3>
-              <p className="text-sm">Asistir al templo y llevar tus propias ordenanzas</p>
+              <h3 className="text-xl font-semibold mb-2 text-slate-800">
+                Asistencia al templo
+              </h3>
+              <p className="text-sm">
+                Asistir al templo y llevar tus propias ordenanzas
+              </p>
               <div className="w-full flex items-center justify-between mt-5">
                 <button className="bg-gray-400 text-sm text-slate-100 hover:scale-105 transition-transform duration-300 px-3 py-1 rounded inset-shadow-sm inset-shadow-gray-600 cursor-pointer">
                   Info.
@@ -129,9 +164,15 @@ export default function Report() {
           </article>
         </div>
         <button
-          onClick={logout}
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">
-          Cerrar Sesión
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className={`px-4 py-2 text-white rounded-lg shadow ${
+            isLoggingOut
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700"
+          }`}
+        >
+          {isLoggingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
         </button>
       </div>
     </>
