@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <div className="mt-20 w-full bg-gradient-to-b from-white bg-gray-300 flex flex-col font-sans">
+      <div className="mt-20 w-full bg-gradient-to-b from-white to-[#c0def3] flex flex-col font-sans">
         <main className="flex-1 flex flex-col md:flex-row items-center justify-center gap-10 px-6 py-8">
           <div className="w-full md:w-1/2">
             <div
@@ -29,7 +29,7 @@ export default function Home() {
           <div className="w-full md:w-2/5 bg-white bg-opacity-70 border border-gray-200 rounded-lg p-6 shadow-lg">
             <Card className="max-w-full border-none bg-transparent shadow-none">
               <h5 className="text-2xl font-bold tracking-tight text-gray-900">
-                Welcome ALEX
+                ¡Welcome ALEX!
               </h5>
               <p className="font-normal text-gray-700 dark:text-gray-400">
                 En FUNVAL creemos en el aprendizaje a través del servicio. Como

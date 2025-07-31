@@ -22,11 +22,11 @@ export default function Navbar() {
 
   const handleLogout = () => {
     setIsLoggingOut(true);
-    // Puedes agregar lógica personalizada aquí si deseas limpiar algo más
+
     setTimeout(() => {
       navigate("/login");
       setIsLoggingOut(false);
-    }, 1000); // Simula un "logout"
+    }, 1000);
   };
 
   return (
@@ -83,23 +83,33 @@ export default function Navbar() {
               className="text-md font-semibold block px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => setIsDropdownOpen(false)}
             >
-              Servicios
+              Services
             </Link>
+
+            {/* ROLES */}
+            <Link
+              to="/Roles"
+              className="text-md font-semibold block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              onClick={() => setIsDropdownOpen(false)}
+            >
+              User Roles
+            </Link>
+
             <Link
               to="/profile"
               className="text-md font-semibold block px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => setIsDropdownOpen(false)}
             >
-              Profile Users
+              User Profile
             </Link>
             <button
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className={`cursor-pointer font-semibold block px-4 py-2 rounded-lg hover:bg-gray-100 w-full text-left ${
+              className={`cursor-pointer font-semibold block px-4 py-2 hover:bg-gray-100 w-full text-left ${
                 isLoggingOut ? "text-gray-400" : "text-red-600"
               }`}
             >
-              {isLoggingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
+              {isLoggingOut ? "Cerrando sesión..." : "Log Out"}
             </button>
           </div>
         )}

@@ -14,7 +14,7 @@ export default function Footer({ user, logout }) {
       navigate("/login");
     } catch (error) {
       console.error("Error en logout:", error);
-      logout(); // igual se limpia el estado
+      logout();
       navigate("/login");
     } finally {
       setIsLoggingOut(false);
@@ -22,7 +22,7 @@ export default function Footer({ user, logout }) {
   };
 
   return (
-    <footer className="bg-gradient-to-t from-gray-900 via-gray-600 to-gray-300 text-white md:px-20 pt-10 pb-4">
+    <footer className="bg-gradient-to-t from-[#00233d] via-[#24699e] to-[#c0def3] text-white md:px-20 pt-10 pb-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {/* REDES SOCIALES */}
         <div className="flex flex-col items-center md:justify-center md:items-start text-center md:text-left">
