@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <div className="mt-20 w-full bg-gradient-to-b from-white bg-gray-300 flex flex-col font-sans">
+      <div className="mt-20 w-full bg-gradient-to-b from-white to-[#c0def3] flex flex-col font-sans">
         <main className="flex-1 flex flex-col md:flex-row items-center justify-center gap-10 px-6 py-8">
           <div className="w-full md:w-1/2">
             <div
