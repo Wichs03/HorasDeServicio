@@ -190,7 +190,7 @@ export default function StudentServices() {
       .catch((err) => console.error("Error al cargar servicios:", err));
 
     axiosClient
-      .get("/profile")
+      .get("/auth/profile")
       .then((res) => setUserRole(res.data.role?.id))
       .catch((err) => console.error("Error al cargar perfil:", err));
   }, []);
