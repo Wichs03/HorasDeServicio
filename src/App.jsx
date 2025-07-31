@@ -3,8 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
-import StudentServices from "./components/StudentServices";
-import Report from "./pages/Report";
+import StudentDashboard from "./pages/StudentDashboard";
 
 export default function App() {
   return (
@@ -12,8 +11,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/servicios" element={<StudentServices />} />
-      <Route path="/report" element={<Report></Report>} />
+      <Route path="/service-hours" element={<StudentDashboard></StudentDashboard>} />
       <Route path="*" element={<h1 className="text-5xl">404 Not Found</h1>} />
     </Routes>
   );
