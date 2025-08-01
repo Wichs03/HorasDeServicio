@@ -10,7 +10,7 @@ export async function login(email, password) {
 
 export const logout = async () => {
   try {
-    await axiosClient.post("/auth/logout", {}, { withCredentials: true });
+    await axiosClient.post("/auth/logout");
     localStorage.removeItem("isLoggedIn");
     window.location.href = "/login";
   } catch (err) {

@@ -59,7 +59,7 @@ export default function Report() {
           ) : (
             <button
               onClick={toggleMasInfo}
-              className="px-3 py-1 bg-indigo-500 mt-2 rounded-md text-sm inset-shadow-sm inset-shadow-indigo-900 text-indigo-200 hover:scale-110 transition-transform duration-500 md:text-lg cursor-pointer">
+              className="px-3 py-1 bg-indigo-500 mt-2 rounded-md text-sm inset-shadow-sm inset-shadow-indigo-900 text-indigo-50 hover:scale-110 transition-transform duration-500 md:text-lg cursor-pointer">
               Mas Info
             </button>
           )}

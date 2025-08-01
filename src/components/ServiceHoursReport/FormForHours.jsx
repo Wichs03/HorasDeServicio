@@ -54,11 +54,11 @@ export default function FormForHours({ categories }) {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="w-full flex items-center justify-center p-2 uppercase text-blue-950">
-        <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">Registra tus Horas de Servicio</h3>
+        <h3 className="text-3xl font-bold text-center md:text-4xl">Registra tus Horas de Servicio</h3>
       </div>
       <form
         onSubmit={handleSubmit}
-        className="w-[80%] p-4 rounded inset-shadow-sm inset-shadow-gray-400 flex flex-col items-center justify-center gap-4 m-5 text-blue-950 mb-20 md:shadow-lg/20 md:inset-shadow-sm md:inset-shadow-white md:w-[60%]">
+        className="w-[80%] p-4 md:px-10 rounded inset-shadow-sm inset-shadow-gray-400 flex flex-col items-center justify-center gap-4 m-5 text-blue-950 mb-20 md:shadow-lg/20 md:inset-shadow-sm md:inset-shadow-white md:w-[60%]">
         <h2 className="text-2xl font-bold">Formulario</h2>
 
         <div className="w-full flex flex-col gap-4 md:flex-row md:mt-5 md:gap-8">
