@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
+import Navbar from "../layout/Navbar";
+import Footer from "../layout/Footer";
 import {
   AiOutlineFilePdf,
   AiOutlineEdit,
@@ -8,7 +8,7 @@ import {
   AiOutlineClose,
   AiOutlineClockCircle,
 } from "react-icons/ai";
-import axiosClient from "../api/axiosClient";
+import axiosClient from "../../api/axiosClient";
 
 function EditReviewModal({ service, onClose, onSave }) {
   const [amountApproved, setAmountApproved] = useState(
