@@ -5,8 +5,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import RolesContent from "./components/roles/RolesContent";
 import Profile from "./components/profile/ProfileContent";
-import StudentServices from "./components/StudentServices";
-import Report from "./pages/Report";
+import StudentDashboard from "./pages/StudentDashboard";
 
 export default function App() {
   return (
@@ -16,8 +15,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/roles" element={<RolesContent />} />
-      <Route path="/servicios" element={<StudentServices />} />
-      <Route path="/report" element={<Report></Report>} />
+      <Route path="/service-hours" element={<StudentDashboard />} />
       <Route path="*" element={<h1 className="text-5xl">404 Not Found</h1>} />
     </Routes>
   );

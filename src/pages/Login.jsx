@@ -12,7 +12,7 @@ export default function Login() {
     try {
       const data = await login(email, password);
       console.log("Sesión iniciada:", data);
-      navigate("/servicios");
+      navigate("/home");
     } catch (err) {
       alert(err.response?.data?.message || "Error al iniciar sesión");
     }
