@@ -91,8 +91,6 @@ export default forwardRef(function PerfilDetails(
                 </div>
               </div>
             </div>
-
-            <DinoGamePortal />
           </div>
         )}
         {editMode && (
