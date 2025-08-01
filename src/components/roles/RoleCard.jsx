@@ -10,7 +10,7 @@ export default function RoleCard({ role, onClick }) {
 
   return (
     <div
-      className="p-2 bg-[#4595e0]  rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
+      className="p-2 bg-[#a3c6e8]  rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
       onClick={() => onClick(role.id)}
     >
       <video

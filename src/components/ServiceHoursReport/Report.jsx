@@ -42,7 +42,7 @@ export default function Report() {
         <p className="absolute w-fit uppercase px-1 bg-cyan-600 text-[8px] text-white font-bold ml-5 mt-[-8px] md:text-lg z-20">
           Vinculacion Social
         </p>
-        <div className="w-full flex flex-col items-center justify-center gap-4 pt-5 pb-4 px-2 bg-blue-800/80 text-white">
+        <div className="w-full flex flex-col items-center justify-center gap-4 pt-5 pb-4 px-2 bg-[#06385e]/90 text-white">
           <h3 className="text-3xl w-full text-center font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] md:text-5xl">
             Presentacion de Horas de Servicio
           </h3>
@@ -59,7 +59,7 @@ export default function Report() {
           ) : (
             <button
               onClick={toggleMasInfo}
-              className="px-3 py-1 bg-indigo-500 mt-2 rounded-md text-sm inset-shadow-sm inset-shadow-indigo-900 text-indigo-50 hover:scale-110 transition-transform duration-500 md:text-lg cursor-pointer">
+              className="px-3 py-1 bg-blue-700 mt-2 rounded-md text-sm inset-shadow-sm inset-shadow-indigo-900 text-white hover:scale-110 transition-transform duration-500 md:text-lg cursor-pointer">
               Mas Info
             </button>
           )}
