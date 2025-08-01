@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/authService";
+import LightRays from "../components/reactBits/LightRays";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,15 +13,28 @@ export default function Login() {
     try {
       const data = await login(email, password);
       console.log("Sesión iniciada:", data);
-      navigate("/servicios");
+      navigate("/home");
     } catch (err) {
       alert(err.response?.data?.message || "Error al iniciar sesión");
     }
   };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-black relative">
+      <div className="w-full h-screen absolute">
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#61A5FF"
+          raysSpeed={1.2}
+          lightSpread={1}
+          rayLength={1.5}
+          followMouse={true}
+          mouseInfluence={0.3}
+          noiseAmount={0.3}
+          distortion={0.05}
+          className="custom-rays"
+        />
+      </div>
       <div className="absolute inset-0">
         <img
           src="/EstudiantesFunval.png"
@@ -34,11 +48,7 @@ export default function Login() {
         <div className="text-center mb-6">
           <h1 className="text-white text-4xl font-bold flex justify-center items-center gap-[2px]">
             <span>FUNV</span>
-            <img
-              src="/faviconA32.ico"
-              alt="A"
-              className="w-7 h-7 inline-block"
-            />
+            <img src="/faviconA32.ico" alt="A" className="w-7 h-7 inline-block" />
             <span>L</span>
           </h1>
           <p className="text-gray-400">Plataforma de estudio virtual</p>
@@ -71,8 +81,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition"
-          >
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition">
             Iniciar sesión
           </button>
         </form>

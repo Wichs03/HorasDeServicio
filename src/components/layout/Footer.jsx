@@ -1,25 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout as logoutService } from "../../api/authService";
+import axiosClient from "../../api/axiosClient";
+import { logout } from "../../api/authService";
 
-export default function Footer({ user, logout }) {
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+export default function Footer() {
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
+  async function getData() {
     try {
-      await logoutService();
-      logout();
-      navigate("/login");
-    } catch (error) {
-      console.error("Error en logout:", error);
-      logout();
-      navigate("/login");
-    } finally {
-      setIsLoggingOut(false);
+      const res = await axiosClient.get("/auth/profile");
+      setUser(res.data);
+      console.log(res.data);
+      setLoading(false);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        navigate("/login");
+      } else {
+        console.error("Error al obtener el perfil:", err);
+      }
     }
-  };
+  }
+
+  useEffect(() => {
+    getData();
+    console.log(user);
+  }, []);
+
+  function logoutBtn() {
+    logout()
+  }
 
   return (
     <footer className="bg-gradient-to-t from-[#00233d] via-[#24699e] to-[#c0def3] text-white md:px-20 pt-10 pb-4">
@@ -114,18 +125,13 @@ export default function Footer({ user, logout }) {
           </button>
           <p className="mb-1">
             Usted se ha identificado como <br />
-            <strong>{user?.nombre || "Usuario"}</strong>
+            <strong>{loading ? `Cargando...` : `${user.f_name}`}</strong>
           </p>
           <button
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className={`cursor-pointer border mt-2 px-3 py-2 font-semibold text-white rounded-lg shadow transition-colors duration-300 transform hover:scale-105 ${
-              isLoggingOut
-                ? "bg-gray-500"
-                : "bg-red-600 lg:bg-blue-700 lg:hover:bg-red-700"
-            }`}
+            onClick={logoutBtn}
+            className={`cursor-pointer border mt-2 px-3 py-2 font-semibold text-white rounded-lg shadow transition-colors duration-300 transform hover:scale-105`}
           >
-            {isLoggingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
+            Cerrar Sesión
           </button>
         </div>
 

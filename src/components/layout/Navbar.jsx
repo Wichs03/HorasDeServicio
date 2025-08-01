@@ -30,16 +30,16 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gradient-to-b from-gray-200 to-white shadow-lg px-6 py-3 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
+    <nav className="bg-[#06385e]/50 backdrop-blur-md shadow-lg px-6 py-3 flex justify-between items-center fixed top-0 left-0 right-0 z-1000">
       {/* LOGO FUNVAL */}
       <div className="flex items-center space-x-6 md:ml-15">
         <Link to="/home">
-          <h1 className="text-[#06385e] text-4xl font-bold flex justify-center items-center gap-[2px]">
+          <h1 className="text-white text-4xl font-bold flex justify-center items-center gap-[2px]">
             <span>FUNV</span>
             <img
               src="/faviconA32.ico"
               alt="A"
-              className="w-7 h-7 inline-block"
+              className="w-7 h-7 inline-block drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
             />
             <span>L</span>
           </h1>
@@ -47,10 +47,10 @@ export default function Navbar() {
       </div>
 
       {/* MENU DROPDOWN */}
-      <div className="relative md:mr-15" ref={dropdownRef}>
+      <div className="relative md:mr-15 z-1000" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center justify-center bg-white border shadow-md rounded-full w-10 h-10 text-gray-800 hover:bg-gray-300 transition cursor-pointer"
+          className="flex items-center justify-center bg-white/50 shadow-md rounded-md w-10 h-10 text-gray-800 hover:bg-gray-300 transition cursor-pointer"
           aria-label="Abrir menú"
         >
           <svg
@@ -79,11 +79,11 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              to="/servicios"
+              to="/service-hours"
               className="text-md font-semibold block px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => setIsDropdownOpen(false)}
             >
-              Services
+              Report Hours
             </Link>
 
             {/* ROLES */}
