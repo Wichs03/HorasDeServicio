@@ -14,7 +14,7 @@ export default function BtnToLogIn() {
   return (
     <>
       {showBtn && (
-        <div className="absolute bottom-10 w-full flex items-center justify-center">
+        <div className="absolute bottom-10 w-full flex items-center justify-center z-400">
           <FadeContent blur={true} duration={1000} easing="ease-out" initialOpacity={0}>
             <div
               to="/home"
